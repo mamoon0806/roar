@@ -208,7 +208,7 @@ namespace BasicCommands
 
     void registerColorEvent(char **args);
 
-    void registerFeedbackLinearActuator(char **args);
+    void registerFeedbackLinearActuator14(char **args);
 
     void registerCustomMotor(char **args);
 

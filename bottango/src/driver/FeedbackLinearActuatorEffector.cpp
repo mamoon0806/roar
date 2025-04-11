@@ -4,10 +4,15 @@
 
 #define FEEDBACK_PROPORTIONAL_CONSTANT 4
 
-FeedbackLinearActuatorEffector::FeedbackLinearActuatorEffector(byte inputPin, byte outputPin, short minPosition, short maxPosition, int maxPositionSec, short startPosition): LoopDrivenEffector(minPosition, maxPosition, maxPositionSec, startPosition)
+FeedbackLinearActuatorEffector::FeedbackLinearActuatorEffector(byte inputPin, byte outAPin, byte outBPin, short minPosition, short maxPosition, int maxPositionSec, short startPosition) : LoopDrivenEffector(minPosition, maxPosition, maxPositionSec, startPosition)
 {
     this->inputPin = inputPin;
-    this->outputPin = outputPin;
+    this->outAPin = outAPin;
+    this->outBPin = outBPin;
+
+    pinMode(inputPin, INPUT);
+    pinMode(outAPin, OUTPUT);
+    pinMode(outBPin, OUTPUT);
 
     Callbacks::onEffectorRegistered(this);
 }
@@ -22,7 +27,29 @@ void FeedbackLinearActuatorEffector::driveOnLoop()
     }
 
     int encoderPosition = analogRead(inputPin);
-    //TODO Drive
+    int delta = currentSignal - encoderPosition;
+    int output = delta * FEEDBACK_PROPORTIONAL_CONSTANT;
+    int pwmSignal = abs(output);
+    if (pwmSignal > 255)
+    {
+        pwmSignal = 255;
+    }
+    analogWrite(13, pwmSignal);
+    if (output < 0)
+    {
+        digitalWrite(this->outAPin, LOW);
+        analogWrite(this->outBPin, pwmSignal);
+    }
+    else if (output > 0)
+    {
+        digitalWrite(this->outBPin, LOW);
+        analogWrite(this->outAPin, pwmSignal);
+    }
+    else
+    {
+        digitalWrite(this->outAPin, LOW);
+        digitalWrite(this->outBPin, LOW);
+    }
 
     LoopDrivenEffector::driveOnLoop();
     AbstractEffector::callbackOnDriveComplete(currentSignal, didChange);
@@ -30,7 +57,7 @@ void FeedbackLinearActuatorEffector::driveOnLoop()
 
 void FeedbackLinearActuatorEffector::getIdentifier(char *outArray, short arraySize)
 {
-    snprintf(outArray, arraySize, "lin%02d%02d", (int)inputPin, (int)outputPin);
+    snprintf(outArray, arraySize, "lin%0d", (int)inputPin);
 }
 
 void FeedbackLinearActuatorEffector::destroy(bool systemShutdown)

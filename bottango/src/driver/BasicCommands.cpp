@@ -358,7 +358,7 @@ namespace BasicCommands
         BottangoCore::effectorPool.addEffector(newEffector);
     }
 
-    void registerFeedbackLinearActuator(char **args)
+    void registerFeedbackLinearActuator14(char **args)
     {
         char *identifier = args[1];
         int minSignal = atoi(args[2]);
@@ -366,14 +366,9 @@ namespace BasicCommands
         int maxSignalSec = atoi(args[4]);
         int startSignal = atoi(args[5]);
 
-        int inputPin = 0;
-        int outputPin = 0;
-        int result = sscanf(identifier, "lin%02d%02d", &inputPin, &outputPin);
-        if (result == 0)
-        {
-            Error::reportError_InvalidPin();
-            return;
-        }
+        int inputPin = 14;
+        int outAPin = 4;
+        int outBPin = 5;
 
         LOG_MKBUF
         LOG_LN(F("register linear actuator"))
@@ -391,7 +386,7 @@ namespace BasicCommands
         LOG_INT(outputPin)
         LOG_NEWLINE()
 
-        FeedbackLinearActuatorEffector *newEffector = new FeedbackLinearActuatorEffector(inputPin, outputPin, minSignal, maxSignal, maxSignalSec, startSignal);
+        FeedbackLinearActuatorEffector *newEffector = new FeedbackLinearActuatorEffector(inputPin, outAPin, outBPin, minSignal, maxSignal, maxSignalSec, startSignal);
         BottangoCore::effectorPool.addEffector(newEffector);
     }
 

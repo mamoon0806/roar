@@ -346,8 +346,8 @@ namespace BottangoCore
         else if (strcmp_P(commandName, BasicCommands::REGISTER_CUSTOM_MOTOR) == 0)
         {
             // Custom Linear actuator
-            if (strstr(splitCommandBuffer[1], "lin") == splitCommandBuffer[1]) {
-                BasicCommands::registerFeedbackLinearActuator(splitCommandBuffer);
+            if (strcmp_P(splitCommandBuffer[1], "lin14") == 0) {
+                BasicCommands::registerFeedbackLinearActuator14(splitCommandBuffer);
             } else {
                 BasicCommands::registerCustomMotor(splitCommandBuffer);
             }
