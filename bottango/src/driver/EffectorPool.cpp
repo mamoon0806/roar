@@ -3,9 +3,11 @@
 #include "Log.h"
 #include "Errors.h"
 #include "FreeRam.h"
+#include "StepDirStepperEffector.h"
 
 EffectorPool::EffectorPool()
 {
+    pinMode(STEPPER_DIR_PIN, OUTPUT);
 }
 
 void EffectorPool::addEffector(AbstractEffector *inEffector)
@@ -117,10 +119,46 @@ bool EffectorPool::effectorUsesFloatCurve(char *identifier)
 
 void EffectorPool::updateAllDriveTargets()
 {
+    // TODO Maybe make stepper dir sharing logic more optimized?
     for (byte i = 0; i < effectors.size(); i++)
     {
         effectors.get(i)->updateOnLoop();
-        effectors.get(i)->driveOnLoop();
+
+        if (effectors.get(i)->effectorType() != EFFECTORTYPE_STEPDIR)
+        {
+            effectors.get(i)->driveOnLoop();
+        }
+    }
+
+    // Do all HIGH DIRs first
+    digitalWrite(STEPPER_DIR_PIN, HIGH);
+    delayMicroseconds(1);
+    for (byte i = 0; i < effectors.size(); i++)
+    {
+        if (effectors.get(i)->effectorType() == EFFECTORTYPE_STEPDIR)
+        {
+            StepDirStepperEffector *stepEffector = dynamic_cast<StepDirStepperEffector*>(effectors.get(i));
+            if ((stepEffector->getDriveValue() > 0 && !stepEffector->clockwiseIsLow) || (stepEffector->getDriveValue() < 0 && stepEffector->clockwiseIsLow))
+            {
+                effectors.get(i)->driveOnLoop();
+            }
+        }
+    }
+    delayMicroseconds(1);
+
+    // Then do all LOW DIRs
+    digitalWrite(STEPPER_DIR_PIN, LOW);
+    delayMicroseconds(1);
+    for (byte i = 0; i < effectors.size(); i++)
+    {
+        if (effectors.get(i)->effectorType() == EFFECTORTYPE_STEPDIR)
+        {
+            StepDirStepperEffector *stepEffector = dynamic_cast<StepDirStepperEffector*>(effectors.get(i));
+            if ((stepEffector->getDriveValue() > 0 && stepEffector->clockwiseIsLow) || (stepEffector->getDriveValue() < 0 && !stepEffector->clockwiseIsLow))
+            {
+                effectors.get(i)->driveOnLoop();
+            }
+        }
     }
 }
 

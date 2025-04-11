@@ -18,6 +18,7 @@ public:
     virtual void driveOnLoop() override;
     virtual void setSync(int syncValue) override;
     virtual bool useFloatCurve() override;
+    virtual int getDriveValue();
 
 protected:
     // for speed limiting

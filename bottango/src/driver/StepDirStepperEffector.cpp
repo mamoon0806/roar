@@ -52,7 +52,7 @@ void StepDirStepperEffector::driveOnLoop()
     {
         if (!currDirectionIsClockwise)
         {
-            digitalWrite(dirPin, clockwiseIsLow ? LOW : HIGH);
+            //digitalWrite(dirPin, clockwiseIsLow ? LOW : HIGH);
             currDirectionIsClockwise = true;
         }
 
@@ -83,7 +83,7 @@ void StepDirStepperEffector::driveOnLoop()
     {
         if (currDirectionIsClockwise)
         {
-            digitalWrite(dirPin, clockwiseIsLow ? HIGH : LOW);
+            //digitalWrite(dirPin, clockwiseIsLow ? HIGH : LOW);
             currDirectionIsClockwise = false;
         }
 
@@ -118,4 +118,9 @@ void StepDirStepperEffector::driveOnLoop()
 void StepDirStepperEffector::getIdentifier(char *outArray, short arraySize)
 {
     snprintf(outArray, arraySize, "%d", (int)stepPin);
+}
+
+int StepDirStepperEffector::effectorType()
+{
+    return EFFECTORTYPE_STEPDIR;
 }

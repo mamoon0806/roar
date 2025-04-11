@@ -266,3 +266,8 @@ bool VelocityEffector::useFloatCurve()
     return AbstractEffector::useFloatCurve();
 #endif
 }
+
+int VelocityEffector::getDriveValue()
+{
+    return this->drive;
+}

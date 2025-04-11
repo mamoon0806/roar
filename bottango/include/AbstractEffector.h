@@ -7,6 +7,9 @@
 #include "BottangoArduinoCallbacks.h"
 #include "BottangoArduinoConfig.h"
 
+#define EFFECTORTYPE_UNDEFINED 0
+#define EFFECTORTYPE_STEPDIR 5
+
 class AbstractEffector
 {
 public:
@@ -35,6 +38,8 @@ public:
     virtual bool useFloatCurve();
 
     virtual void destroy(bool systemShutdown);
+
+    virtual int effectorType();
 
     virtual ~AbstractEffector();
 

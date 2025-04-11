@@ -242,7 +242,7 @@ namespace BasicCommands
     {
 
         byte stepPin = atoi(args[1]);
-        byte dirPin = atoi(args[2]);
+        byte dirPin = /*atoi(args[2])*/ STEPPER_DIR_PIN; // On ROAR direction pin is the same
 
         bool clockwiseIsLow = atoi(args[3]) != 0;
 

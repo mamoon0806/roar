@@ -122,6 +122,11 @@ bool AbstractEffector::useFloatCurve()
 #endif
 }
 
+int AbstractEffector::effectorType()
+{
+    return EFFECTORTYPE_UNDEFINED;
+}
+
 AbstractEffector::~AbstractEffector()
 {
 }

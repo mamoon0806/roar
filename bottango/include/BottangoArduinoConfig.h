@@ -4,6 +4,8 @@
 #include "BottangoArduinoModules.h"
 #include <Arduino.h>
 
+#define STEPPER_DIR_PIN 9
+
 // !! Max Registered Motors !!
 // Max effectors (motors, etc.) that can be registered at once.
 // more than 8 crashes an Arduino Uno / Nano
